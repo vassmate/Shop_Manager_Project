@@ -10,11 +10,16 @@ public class Shop {
 	private Milk[] milkBar;
 
 	public Shop(String name, String address, String owner, Milk[] milkBar) {
-		super();
 		this.name = name;
 		this.address = address;
 		this.owner = owner;
 		this.milkBar = milkBar;
+	}
+
+	public Shop(String name, String address, String owner) {
+		this.name = name;
+		this.address = address;
+		this.owner = owner;
 	}
 
 	public String getName() {
@@ -33,8 +38,12 @@ public class Shop {
 		return milkBar;
 	}
 
+	private void setMilkBar(Milk[] milkBar) {
+		this.milkBar = milkBar;
+	}
+
 	public boolean isThereMilk() {
-		if (this.milkBar.length == 0) {
+		if (getMilkBar().length == 0) {
 			return false;
 		}
 		return true;
@@ -43,23 +52,23 @@ public class Shop {
 	public Milk buyMilk(Milk m) {
 
 		// Make a copy from the milkBar to safely modify and iterate over
-		Milk[] currentMilkBar = this.milkBar.clone();
+		Milk[] currentMilkBar = getMilkBar().clone();
 
 		// Find the sought Milk in the array and make a new array without it
 		for (Milk milk : currentMilkBar) {
 			if (milk.equals(m)) {
-				this.milkBar = removeMilk(currentMilkBar, m);
+				setMilkBar(makeNewMilkBar(currentMilkBar, m));
 				return milk;
 			}
 		}
 
 		// If the sought Milk was not found than we just return with the first
 		// one we find and make a new array without it
-		this.milkBar = removeMilk(currentMilkBar, currentMilkBar[0]);
+		setMilkBar(makeNewMilkBar(currentMilkBar, currentMilkBar[0]));
 		return currentMilkBar[0];
 	}
 
-	private static Milk[] removeMilk(Milk[] currentMB, Milk milkToExclude) {
+	private static Milk[] makeNewMilkBar(Milk[] currentMB, Milk milkToExclude) {
 		Milk[] changedMB = new Milk[currentMB.length - 1];
 
 		for (int i = 0; i < changedMB.length; i++) {
@@ -84,6 +93,23 @@ public class Shop {
 		}
 
 		return changedMB;
+	}
+
+	public void replenishMilk(Milk m) {
+		if (isThereMilk()) {
+			Milk[] currentMilkBarArray = getMilkBar().clone();
+			Milk[] newMilkBarArray = new Milk[currentMilkBarArray.length + 1];
+
+			for (int i = 0; i < currentMilkBarArray.length; i++) {
+				newMilkBarArray[i] = currentMilkBarArray[i];
+			}
+
+			newMilkBarArray[newMilkBarArray.length - 1] = m;
+			setMilkBar(newMilkBarArray);
+		} else {
+			setMilkBar(new Milk[1]);
+			getMilkBar()[1] = m;
+		}
 	}
 
 	@Override

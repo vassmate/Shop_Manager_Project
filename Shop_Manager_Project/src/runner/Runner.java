@@ -17,6 +17,7 @@ public class Runner {
 		Milk[] milkArray = { milk1, milk2, milk3, milk4, milk5 };
 
 		Shop milkShop = new Shop("Milk Shop", "Egyenes utca 1.", "Kovacs Jozsi", milkArray);
+		milkShop.replenishMilk(milk6);
 
 		printMilkShop(milkShop);
 		milkShop.buyMilk(milk4);
