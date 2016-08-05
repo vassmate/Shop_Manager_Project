@@ -26,41 +26,20 @@ public class Milk {
 		return company;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
 	public int getPrice() {
 		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
 	}
 
 	public LocalDate getWarrant() {
 		return warrant;
 	}
 
-	public void setWarrant(String date) {
-		LocalDate warr = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		this.warrant = warr;
-	}
-
 	public double getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(float capacity) {
-		this.capacity = capacity;
-	}
-
 	public double getDripping() {
 		return dripping;
-	}
-
-	public void setDripping(float dripping) {
-		this.dripping = dripping;
 	}
 
 	public boolean isDrinkable() {
