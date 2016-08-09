@@ -1,32 +1,32 @@
 package runner;
 
 import java.util.Hashtable;
-import java.util.UUID;
 
-import products.Milk;
+import shop.MilkFactory;
 import shop.Shop;
+import shop.product.Milk;
 
 public class Runner {
 
 	public static void main(String[] args) {
+		MilkFactory mFactory = new MilkFactory();
+		Shop mShop = new Shop("Milk Shop", "Egyenes utca 1.", "Kovacs Jozsi");
 
-		Milk milk1 = new Milk(generateId(), "Falusi", "2016-11-20", 1000, 2.5);
-		Milk milk2 = new Milk(generateId(), "Riska", "2016-05-10", 500, 19.5);
-		Milk milk3 = new Milk(generateId(), "Mizo", "2016-06-15", 600, 5.5);
-		Milk milk4 = new Milk(generateId(), "Spar", "2016-08-20", 750, 10);
-		Milk milk5 = new Milk(generateId(), "Milk", "2016-12-20", 1500, 2.5);
-		Milk milk6 = new Milk(generateId(), "Tej", "2016-12-20", 230, 2.5);
+		Milk milk1 = mFactory.makeNewLongLifeMilk("Falusi", "2016-11-20", 1000, 2.5);
+		Milk milk2 = mFactory.makeNewLongLifeMilk("Riska", "2016-05-10", 500, 1.5);
+		Milk milk3 = mFactory.makeNewLongLifeMilk("Mizo", "2016-06-15", 600, 5.5);
+		Milk milk4 = mFactory.makeNewSemiLongLifeMilk("Spar", "2016-08-20", 750, 2.2);
+		Milk milk5 = mFactory.makeNewSemiLongLifeMilk("Milk", "2016-12-20", 1500, 2.5);
+		Milk milk6 = mFactory.makeNewSemiLongLifeMilk("Tej", "2016-12-20", 230, 2.5);
 
-		Shop milkShop = new Shop("Milk Shop", "Egyenes utca 1.", "Kovacs Jozsi");
+		mShop.addNewFood(milk1, 25, 250);
+		mShop.addNewFood(milk2, 25, 300);
+		mShop.addNewFood(milk3, 13, 150);
+		mShop.addNewFood(milk4, 11, 200);
+		mShop.addNewFood(milk5, 40, 120);
+		mShop.addNewFood(milk6, 22, 410);
 
-		milkShop.replenishMilk(milk1, 299);
-		milkShop.replenishMilk(milk2, 250);
-		milkShop.replenishMilk(milk3, 135);
-		milkShop.replenishMilk(milk4, 110);
-		milkShop.replenishMilk(milk5, 400);
-		milkShop.replenishMilk(milk6, 225);
-
-		printMilkShop(milkShop);
+		printMilkShop(mShop);
 	}
 
 	private static void printMilks(Hashtable<Long, Shop.ShopRegistration> milks) {
@@ -36,12 +36,7 @@ public class Runner {
 	}
 
 	private static void printMilkShop(Shop milkShop) {
-		System.out.println("Milk Shop:\n\t" + milkShop + "\n\tMilk bar:");
-		printMilks(milkShop.getMilkBar());
-	}
-
-	private static long generateId() {
-		UUID id = UUID.randomUUID();
-		return Math.abs(id.getMostSignificantBits());
+		System.out.println("SHOP:\n\t" + milkShop + "\n\tPRODUCTS:");
+		printMilks(milkShop.getFoodBar());
 	}
 }
