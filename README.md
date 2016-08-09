@@ -10,3 +10,5 @@ Work in progress...
  - Access modifiers, java class organization, Overloading.
 - Task II.:
  - Implementation, API change, array, Vector, ArrayList, Inner class.
+- Task III.:
+ - Inheritence, abstract class
