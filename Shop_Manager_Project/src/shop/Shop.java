@@ -2,7 +2,12 @@ package shop;
 
 import java.util.Hashtable;
 
+import shop.exception.NoMoreProductException;
+import shop.exception.NoSuchProductException;
+import shop.product.Cheese;
 import shop.product.Food;
+import shop.product.milk.LongLifeMilk;
+import shop.product.milk.SemiLongLifeMilk;
 
 public class Shop {
 
@@ -41,29 +46,66 @@ public class Shop {
 	}
 
 	public boolean isThereFood(Long barcode) {
-		if (getFoodBar().size() == 0 || !getFoodBar().containsKey(barcode)
-				|| getFoodBar().get(barcode).getQuantity() == 0) {
+		if (getFoodBar().size() == 0 || !getFoodBar().containsKey(barcode)) {
 			return false;
 		}
 		return true;
 	}
 
-	public void buyFood(Long barcode, int quantity) {
-		if (isThereFood(barcode)) {
-			if (getFoodBar().get(barcode).getQuantity() >= quantity) {
-				getFoodBar().get(barcode).decreaseQuantity(quantity);
+	public boolean isThereMilk() {
+		for (long barcode : getFoodBar().keySet()) {
+			Food currentFood = getFoodBar().get(barcode).getFood();
+			if (currentFood instanceof SemiLongLifeMilk || currentFood instanceof LongLifeMilk) {
+				return true;
 			}
+		}
+		return false;
+	}
+
+	public boolean isThereCheese() {
+		for (long barcode : getFoodBar().keySet()) {
+			Food currentFood = getFoodBar().get(barcode).getFood();
+			if (currentFood instanceof Cheese) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void buyFood(Long barcode, int quantity) {
+		try {
+			if (isThereFood(barcode)) {
+				if (getFoodBar().get(barcode).getQuantity() >= quantity) {
+					getFoodBar().get(barcode).decreaseQuantity(quantity);
+				} else {
+					throw new NoMoreProductException(getFoodBar().get(barcode).getFood());
+				}
+			} else {
+				throw new NoSuchProductException();
+			}
+		} catch (ShopException ex) {
+			ex.printStackTrace();
 		}
 	}
 
 	public void replenishFood(Food food, int quantity) {
-		if (isThereFood(food.getBarcode())) {
-			getFoodBar().get(food.getBarcode()).increaseQuantity(quantity);
+		try {
+			if (isThereFood(food.getBarcode())) {
+				getFoodBar().get(food.getBarcode()).increaseQuantity(quantity);
+			} else {
+				throw new NoSuchProductException(food);
+			}
+		} catch (ShopException ex) {
+			ex.printStackTrace();
 		}
 	}
 
 	public void addNewFood(Food food, int quantity, int price) {
 		getFoodBar().put(food.getBarcode(), new ShopRegistration(food, quantity, price));
+	}
+
+	public void removeFood(long barcode) {
+		getFoodBar().remove(barcode);
 	}
 
 	@Override
@@ -119,6 +161,5 @@ public class Shop {
 		public String toString() {
 			return "\n\t\tPRODUCT:" + getFood() + "\n\t\tQUANTITY:" + getQuantity() + "\n\t\tPRICE:" + getPrice();
 		}
-
 	}
 }

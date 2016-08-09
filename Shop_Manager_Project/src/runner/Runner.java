@@ -2,14 +2,15 @@ package runner;
 
 import java.util.Hashtable;
 
-import shop.MilkFactory;
+import shop.ProductFactory;
 import shop.Shop;
+import shop.product.Cheese;
 import shop.product.Milk;
 
 public class Runner {
 
 	public static void main(String[] args) {
-		MilkFactory mFactory = new MilkFactory();
+		ProductFactory mFactory = new ProductFactory();
 		Shop mShop = new Shop("Milk Shop", "Egyenes utca 1.", "Kovacs Jozsi");
 
 		Milk milk1 = mFactory.makeNewLongLifeMilk("Falusi", "2016-11-20", 1000, 2.5);
@@ -18,13 +19,17 @@ public class Runner {
 		Milk milk4 = mFactory.makeNewSemiLongLifeMilk("Spar", "2016-08-20", 750, 2.2);
 		Milk milk5 = mFactory.makeNewSemiLongLifeMilk("Milk", "2016-12-20", 1500, 2.5);
 		Milk milk6 = mFactory.makeNewSemiLongLifeMilk("Tej", "2016-12-20", 230, 2.5);
+		Cheese cheese1 = mFactory.makeNewCheese("Tehen", "2016-12-01", 12.6, 10.2);
+		Cheese cheese2 = mFactory.makeNewCheese("Sajt", "2016-10-01", 11.4, 5.5);
 
 		mShop.addNewFood(milk1, 25, 250);
-		mShop.addNewFood(milk2, 25, 300);
+		mShop.addNewFood(milk2, 20, 300);
 		mShop.addNewFood(milk3, 13, 150);
 		mShop.addNewFood(milk4, 11, 200);
 		mShop.addNewFood(milk5, 40, 120);
 		mShop.addNewFood(milk6, 22, 410);
+		mShop.addNewFood(cheese1, 20, 6500);
+		mShop.addNewFood(cheese2, 20, 7500);
 
 		printMilkShop(mShop);
 	}
