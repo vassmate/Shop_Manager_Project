@@ -12,3 +12,5 @@ Work in progress...
  - Implementation, API change, array, Vector, ArrayList, Inner class.
 - Task III.:
  - Inheritence, abstract class
+- Task IV.:
+ - Error Handling
