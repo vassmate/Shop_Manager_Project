@@ -21,7 +21,7 @@ public class Cheese extends Food {
 
 	@Override
 	public String toString() {
-		return "\n\t\t\t_Type:Cheese" + "\n\t\t\t_Barcode:" + getBarcode() + "\n\t\t\t_Company:" + getCompany()
-				+ "\n\t\t\t_Warrant:" + getWeight() + "\n\t\t\t_Dripping:" + getDripping();
+		return "\n\t\t\t_Type:Cheese" + super.toString() + "\n\t\t\t_Weight:" + getWeight() + "\n\t\t\t_Dripping:"
+				+ getDripping();
 	}
 }

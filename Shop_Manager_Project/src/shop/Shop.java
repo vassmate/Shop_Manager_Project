@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import shop.exception.NoMoreProductException;
 import shop.exception.NoSuchProductException;
 import shop.product.Cheese;
-import shop.product.Food;
 import shop.product.milk.LongLifeMilk;
 import shop.product.milk.SemiLongLifeMilk;
 
@@ -14,13 +13,13 @@ public class Shop {
 	private String name;
 	private String address;
 	private String owner;
-	private Hashtable<Long, ShopRegistration> foodBar = new Hashtable<Long, ShopRegistration>();
+	private Hashtable<Long, ShopRegistration> productStock = new Hashtable<Long, ShopRegistration>();
 
-	public Shop(String name, String address, String owner, Hashtable<Long, ShopRegistration> foodBar) {
+	public Shop(String name, String address, String owner, Hashtable<Long, ShopRegistration> productStock) {
 		this.name = name;
 		this.address = address;
 		this.owner = owner;
-		this.foodBar = foodBar;
+		this.productStock = productStock;
 	}
 
 	public Shop(String name, String address, String owner) {
@@ -41,44 +40,44 @@ public class Shop {
 		return owner;
 	}
 
-	public Hashtable<Long, ShopRegistration> getFoodBar() {
-		return foodBar;
+	public Hashtable<Long, ShopRegistration> getProductStock() {
+		return productStock;
 	}
 
-	public boolean isThereFood(Long barcode) {
-		if (getFoodBar().size() == 0 || !getFoodBar().containsKey(barcode)) {
+	public boolean isThereProductOnStock(Long barcode) {
+		if (getProductStock().size() == 0 || !getProductStock().containsKey(barcode)) {
 			return false;
 		}
 		return true;
 	}
 
-	public boolean isThereMilk() {
-		for (long barcode : getFoodBar().keySet()) {
-			Food currentFood = getFoodBar().get(barcode).getFood();
-			if (currentFood instanceof SemiLongLifeMilk || currentFood instanceof LongLifeMilk) {
+	public boolean isThereMilkOnStock() {
+		for (long barcode : getProductStock().keySet()) {
+			Product currentProduct = getProductStock().get(barcode).getProduct();
+			if (currentProduct instanceof SemiLongLifeMilk || currentProduct instanceof LongLifeMilk) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isThereCheese() {
-		for (long barcode : getFoodBar().keySet()) {
-			Food currentFood = getFoodBar().get(barcode).getFood();
-			if (currentFood instanceof Cheese) {
+	public boolean isThereCheeseOnStock() {
+		for (long barcode : getProductStock().keySet()) {
+			Product currentProduct = getProductStock().get(barcode).getProduct();
+			if (currentProduct instanceof Cheese) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void buyFood(Long barcode, int quantity) {
+	public void buyProduct(Long barcode, int quantity) {
 		try {
-			if (isThereFood(barcode)) {
-				if (getFoodBar().get(barcode).getQuantity() >= quantity) {
-					getFoodBar().get(barcode).decreaseQuantity(quantity);
+			if (isThereProductOnStock(barcode)) {
+				if (getProductStock().get(barcode).getQuantity() >= quantity) {
+					getProductStock().get(barcode).decreaseQuantity(quantity);
 				} else {
-					throw new NoMoreProductException(getFoodBar().get(barcode).getFood());
+					throw new NoMoreProductException(getProductStock().get(barcode).getProduct());
 				}
 			} else {
 				throw new NoSuchProductException();
@@ -88,24 +87,24 @@ public class Shop {
 		}
 	}
 
-	public void replenishFood(Food food, int quantity) {
+	public void replenishProduct(Product product, int quantity) {
 		try {
-			if (isThereFood(food.getBarcode())) {
-				getFoodBar().get(food.getBarcode()).increaseQuantity(quantity);
+			if (isThereProductOnStock(product.getBarcode())) {
+				getProductStock().get(product.getBarcode()).increaseQuantity(quantity);
 			} else {
-				throw new NoSuchProductException(food);
+				throw new NoSuchProductException(product);
 			}
 		} catch (ShopException ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	public void addNewFood(Food food, int quantity, int price) {
-		getFoodBar().put(food.getBarcode(), new ShopRegistration(food, quantity, price));
+	public void addNewProduct(Product product, int quantity, int price) {
+		getProductStock().put(product.getBarcode(), new ShopRegistration(product, quantity, price));
 	}
 
-	public void removeFood(long barcode) {
-		getFoodBar().remove(barcode);
+	public void removeProduct(long barcode) {
+		getProductStock().remove(barcode);
 	}
 
 	@Override
@@ -115,22 +114,22 @@ public class Shop {
 
 	public class ShopRegistration {
 
-		private Food food;
+		private Product product;
 		private int quantity;
 		private int price;
 
-		public ShopRegistration(Food food, int quantity, int price) {
-			this.food = food;
+		public ShopRegistration(Product product, int quantity, int price) {
+			this.product = product;
 			this.quantity = quantity;
 			this.price = price;
 		}
 
-		public Food getFood() {
-			return food;
+		public Product getProduct() {
+			return product;
 		}
 
-		public void setFood(Food food) {
-			this.food = food;
+		public void setProduct(Product product) {
+			this.product = product;
 		}
 
 		public int getQuantity() {
@@ -159,7 +158,7 @@ public class Shop {
 
 		@Override
 		public String toString() {
-			return "\n\t\tPRODUCT:" + getFood() + "\n\t\tQUANTITY:" + getQuantity() + "\n\t\tPRICE:" + getPrice();
+			return "\n\t\tPRODUCT:" + getProduct() + "\n\t\tQUANTITY:" + getQuantity() + "\n\t\tPRICE:" + getPrice();
 		}
 	}
 }

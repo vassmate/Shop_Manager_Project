@@ -3,23 +3,14 @@ package shop.product;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public abstract class Food {
-	private long barcode;
-	private String company;
+import shop.Product;
+
+public abstract class Food extends Product {
 	private LocalDate warrant;
 
 	public Food(long barcode, String company, String warrant) {
-		this.barcode = barcode;
-		this.company = company;
+		super(barcode, company);
 		setWarrant(warrant);
-	}
-
-	public long getBarcode() {
-		return barcode;
-	}
-
-	public String getCompany() {
-		return company;
 	}
 
 	public LocalDate getWarrant() {
@@ -38,6 +29,6 @@ public abstract class Food {
 
 	@Override
 	public String toString() {
-		return "\n_Barcode:" + getBarcode() + "\nCompany:" + getCompany() + "\n_Warrant:" + getWarrant();
+		return super.toString() + "\n\t\t\t_Warrant:" + getWarrant() + "\n\t\t\t_isEatable:" + isEatable();
 	}
 }

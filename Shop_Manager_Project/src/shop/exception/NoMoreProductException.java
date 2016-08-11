@@ -1,5 +1,6 @@
 package shop.exception;
 
+import shop.Product;
 import shop.ShopException;
 
 public class NoMoreProductException extends ShopException {
@@ -9,7 +10,7 @@ public class NoMoreProductException extends ShopException {
 
 	}
 
-	public NoMoreProductException(Object object) {
-		super("\nNo such product on stock:" + object);
+	public NoMoreProductException(Product product) {
+		super("\nNo such product on stock:" + product);
 	}
 }
