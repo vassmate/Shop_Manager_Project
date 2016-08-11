@@ -14,3 +14,5 @@ Work in progress...
  - Inheritence, abstract class
 - Task IV.:
  - Error Handling
+- Task V.:
+ - Factory design pattern
