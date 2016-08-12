@@ -1,10 +1,9 @@
 package runner;
 
-import java.util.Hashtable;
-
 import shop.Product;
 import shop.ProductFactory;
 import shop.Shop;
+import shop.Shop.ProductIterator;
 import shop.product.Milk;
 
 public class Runner {
@@ -35,35 +34,31 @@ public class Runner {
 		Product soap1 = pFactory.makeNewSoap("Szappan", 'A');
 		Product soap2 = pFactory.makeNewSoap("Soap", 'B');
 
+		// Adding stuff to the stock
 		fShop.addNewProduct(milk1, 25, 250);
 		fShop.addNewProduct(milk2, 20, 300);
 		fShop.addNewProduct(milk3, 13, 150);
 		fShop.addNewProduct(milk4, 11, 200);
 		fShop.addNewProduct(milk5, 40, 120);
-
 		fShop.addNewProduct(milk6, 22, 410);
 		fShop.addNewProduct(milk7, 12, 320);
 		fShop.addNewProduct(milk8, 32, 510);
 		fShop.addNewProduct(milk9, 44, 310);
 		fShop.addNewProduct(milk10, 36, 210);
-
 		fShop.addNewProduct(cheese1, 20, 620);
 		fShop.addNewProduct(cheese2, 20, 750);
-
 		fShop.addNewProduct(soap1, 20, 650);
 		fShop.addNewProduct(soap2, 20, 450);
 
-		printMilkShop(fShop);
+		// Print all data
+		printShop(fShop);
 	}
 
-	private static void printMilks(Hashtable<Long, Shop.ShopRegistration> products) {
-		for (Long barcode : products.keySet()) {
-			System.out.println(products.get(barcode));
+	private static void printShop(Shop shop) {
+		ProductIterator pIter = shop.new ProductIterator(shop.getProductsIterator());
+		System.out.println("SHOP:" + shop + "\n\tPRODUCTS:");
+		while (pIter.hasNext()) {
+			System.out.println(pIter.next());
 		}
-	}
-
-	private static void printMilkShop(Shop shop) {
-		System.out.println("SHOP:\n\t" + shop + "\n\tPRODUCTS:");
-		printMilks(shop.getProductStock());
 	}
 }

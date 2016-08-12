@@ -1,14 +1,17 @@
 package shop;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
+import shop.behavior.IShopBehavior;
 import shop.exception.NoMoreProductException;
 import shop.exception.NoSuchProductException;
 import shop.product.Cheese;
 import shop.product.milk.LongLifeMilk;
 import shop.product.milk.SemiLongLifeMilk;
 
-public class Shop {
+public class Shop implements IShopBehavior {
 
 	private String name;
 	private String address;
@@ -28,20 +31,30 @@ public class Shop {
 		this.owner = owner;
 	}
 
+	public Hashtable<Long, ShopRegistration> getProductStock() {
+		return productStock;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getAddress() {
 		return address;
 	}
 
+	@Override
 	public String getOwner() {
 		return owner;
 	}
 
-	public Hashtable<Long, ShopRegistration> getProductStock() {
-		return productStock;
+	@Override
+	public Iterator<Long> getProductsIterator() {
+		Set<Long> pKeys = getProductStock().keySet();
+		Iterator<Long> pIterator = pKeys.iterator();
+		return pIterator;
 	}
 
 	public boolean isThereProductOnStock(Long barcode) {
@@ -52,8 +65,9 @@ public class Shop {
 	}
 
 	public boolean isThereMilkOnStock() {
-		for (long barcode : getProductStock().keySet()) {
-			Product currentProduct = getProductStock().get(barcode).getProduct();
+		ProductIterator pIter = new ProductIterator(getProductsIterator());
+		while (pIter.hasNext()) {
+			Product currentProduct = pIter.next().getProduct();
 			if (currentProduct instanceof SemiLongLifeMilk || currentProduct instanceof LongLifeMilk) {
 				return true;
 			}
@@ -62,8 +76,9 @@ public class Shop {
 	}
 
 	public boolean isThereCheeseOnStock() {
-		for (long barcode : getProductStock().keySet()) {
-			Product currentProduct = getProductStock().get(barcode).getProduct();
+		ProductIterator pIter = new ProductIterator(getProductsIterator());
+		while (pIter.hasNext()) {
+			Product currentProduct = pIter.next().getProduct();
 			if (currentProduct instanceof Cheese) {
 				return true;
 			}
@@ -104,12 +119,20 @@ public class Shop {
 	}
 
 	public void removeProduct(long barcode) {
-		getProductStock().remove(barcode);
+		try {
+			if (isThereProductOnStock(barcode)) {
+				getProductStock().remove(barcode);
+			} else {
+				throw new NoSuchProductException();
+			}
+		} catch (ShopException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "SHOP_NAME: " + getName() + "\n\tSHOP_ADDRESS: " + getAddress() + "\n\tOWNER: " + getOwner();
+		return "\n\tSHOP_NAME: " + getName() + "\n\tSHOP_ADDRESS: " + getAddress() + "\n\tOWNER: " + getOwner();
 	}
 
 	public class ShopRegistration {
@@ -159,6 +182,37 @@ public class Shop {
 		@Override
 		public String toString() {
 			return "\n\t\tPRODUCT:" + getProduct() + "\n\t\tQUANTITY:" + getQuantity() + "\n\t\tPRICE:" + getPrice();
+		}
+	}
+
+	public class ProductIterator implements Iterator<ShopRegistration> {
+
+		private Iterator<Long> pIterator;
+
+		public ProductIterator(Iterator<Long> pIterator) {
+			this.pIterator = pIterator;
+		}
+
+		public Iterator<Long> getPIterator() {
+			return pIterator;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (getPIterator().hasNext()) {
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public ShopRegistration next() {
+			return getProductStock().get(getPIterator().next());
+		}
+
+		@Override
+		public void remove() {
+			getProductStock().remove(getPIterator().next());
 		}
 	}
 }
