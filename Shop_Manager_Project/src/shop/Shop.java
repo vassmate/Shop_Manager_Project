@@ -2,21 +2,22 @@ package shop;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
 
-import shop.behavior.IShopBehavior;
-import shop.exception.NoMoreProductException;
-import shop.exception.NoSuchProductException;
-import shop.product.Cheese;
-import shop.product.milk.LongLifeMilk;
-import shop.product.milk.SemiLongLifeMilk;
+import shop.behavior.ShopBehaviorImpl;
 
-public class Shop implements IShopBehavior {
+public class Shop {
 
 	private String name;
 	private String address;
 	private String owner;
 	private Hashtable<Long, ShopRegistration> productStock = new Hashtable<Long, ShopRegistration>();
+	private ShopBehaviorImpl shopBehavior = new ShopBehaviorImpl(this);
+
+	public Shop(String name, String address, String owner) {
+		this.name = name;
+		this.address = address;
+		this.owner = owner;
+	}
 
 	public Shop(String name, String address, String owner, Hashtable<Long, ShopRegistration> productStock) {
 		this.name = name;
@@ -25,109 +26,52 @@ public class Shop implements IShopBehavior {
 		this.productStock = productStock;
 	}
 
-	public Shop(String name, String address, String owner) {
-		this.name = name;
-		this.address = address;
-		this.owner = owner;
+	public String getName() {
+		return name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getOwner() {
+		return owner;
 	}
 
 	public Hashtable<Long, ShopRegistration> getProductStock() {
 		return productStock;
 	}
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String getAddress() {
-		return address;
-	}
-
-	@Override
-	public String getOwner() {
-		return owner;
-	}
-
-	@Override
 	public Iterator<Long> getProductsIterator() {
-		Set<Long> pKeys = getProductStock().keySet();
-		Iterator<Long> pIterator = pKeys.iterator();
-		return pIterator;
+		return shopBehavior.getProductsIterator();
 	}
 
 	public boolean isThereProductOnStock(Long barcode) {
-		if (getProductStock().size() == 0 || !getProductStock().containsKey(barcode)) {
-			return false;
-		}
-		return true;
+		return shopBehavior.isThereProductOnStock(barcode);
 	}
 
 	public boolean isThereMilkOnStock() {
-		ProductIterator pIter = new ProductIterator(getProductsIterator());
-		while (pIter.hasNext()) {
-			Product currentProduct = pIter.next().getProduct();
-			if (currentProduct instanceof SemiLongLifeMilk || currentProduct instanceof LongLifeMilk) {
-				return true;
-			}
-		}
-		return false;
+		return shopBehavior.isThereMilkOnStock();
 	}
 
 	public boolean isThereCheeseOnStock() {
-		ProductIterator pIter = new ProductIterator(getProductsIterator());
-		while (pIter.hasNext()) {
-			Product currentProduct = pIter.next().getProduct();
-			if (currentProduct instanceof Cheese) {
-				return true;
-			}
-		}
-		return false;
+		return shopBehavior.isThereCheeseOnStock();
 	}
 
 	public void buyProduct(Long barcode, int quantity) {
-		try {
-			if (isThereProductOnStock(barcode)) {
-				if (getProductStock().get(barcode).getQuantity() >= quantity) {
-					getProductStock().get(barcode).decreaseQuantity(quantity);
-				} else {
-					throw new NoMoreProductException(getProductStock().get(barcode).getProduct());
-				}
-			} else {
-				throw new NoSuchProductException();
-			}
-		} catch (ShopException ex) {
-			ex.printStackTrace();
-		}
+		shopBehavior.buyProduct(barcode, quantity);
 	}
 
 	public void replenishProduct(Product product, int quantity) {
-		try {
-			if (isThereProductOnStock(product.getBarcode())) {
-				getProductStock().get(product.getBarcode()).increaseQuantity(quantity);
-			} else {
-				throw new NoSuchProductException(product);
-			}
-		} catch (ShopException ex) {
-			ex.printStackTrace();
-		}
+		shopBehavior.replenishProduct(product, quantity);
 	}
 
 	public void addNewProduct(Product product, int quantity, int price) {
-		getProductStock().put(product.getBarcode(), new ShopRegistration(product, quantity, price));
+		shopBehavior.addNewProduct(product, quantity, price);
 	}
 
 	public void removeProduct(long barcode) {
-		try {
-			if (isThereProductOnStock(barcode)) {
-				getProductStock().remove(barcode);
-			} else {
-				throw new NoSuchProductException();
-			}
-		} catch (ShopException ex) {
-			ex.printStackTrace();
-		}
+		shopBehavior.removeProduct(barcode);
 	}
 
 	@Override
