@@ -10,6 +10,7 @@ public class Shop {
 	private String name;
 	private String address;
 	private String owner;
+	private boolean open = false;
 	private Hashtable<Long, ShopRegistration> productStock = new Hashtable<Long, ShopRegistration>();
 	private ShopBehaviorImpl shopBehavior = new ShopBehaviorImpl(this);
 
@@ -36,6 +37,22 @@ public class Shop {
 
 	public String getOwner() {
 		return owner;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+
+	public void open() {
+		shopBehavior.open();
+	}
+
+	public void close() {
+		shopBehavior.close();
 	}
 
 	public Hashtable<Long, ShopRegistration> getProductStock() {
@@ -129,7 +146,7 @@ public class Shop {
 		}
 	}
 
-	public class ProductIterator implements Iterator<ShopRegistration> {
+	public class ProductIterator implements Iterator<Object> {
 
 		private Iterator<Long> pIterator;
 
@@ -150,8 +167,9 @@ public class Shop {
 		}
 
 		@Override
-		public ShopRegistration next() {
-			return getProductStock().get(getPIterator().next());
+		public Object next() {
+			Product p = (Product) getProductStock().get(getPIterator().next()).getProduct();
+			return new Product(p.getBarcode(), p.getCompany());
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 package shop;
 
-public abstract class Product {
+public class Product {
 	private long barcode;
 	private String company;
 

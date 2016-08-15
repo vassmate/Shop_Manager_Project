@@ -5,6 +5,10 @@ import java.util.Iterator;
 import shop.Product;
 
 public interface IShopBehavior {
+	
+	public void open();
+	
+	public void close();
 
 	public Iterator<Long> getProductsIterator();
 
