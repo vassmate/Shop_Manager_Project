@@ -16,3 +16,9 @@ Work in progress...
  - Error Handling
 - Task V.:
  - Factory design pattern
+- Task VI.:
+ - Interface, Hashtable, Iterator
+
+# Work in progress:
+- Task VII.:
+ - Error handling, File handling, Iterator, Cross Cutting Concern
