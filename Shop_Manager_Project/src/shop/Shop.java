@@ -52,6 +52,7 @@ public class Shop {
 	}
 
 	public void close() {
+		shopBehavior.getShopLogger().closeLogging();
 		shopBehavior.close();
 	}
 

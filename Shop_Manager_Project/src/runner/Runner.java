@@ -59,7 +59,6 @@ public class Runner {
 		// Print all data
 		printShop(fShop);
 		fShop.close();
-		printShop(fShop);
 	}
 
 	private static void printShop(Shop shop) {

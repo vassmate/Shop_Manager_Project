@@ -11,6 +11,7 @@ import shop.ShopException;
 import shop.exception.NoMoreProductException;
 import shop.exception.NoSuchProductException;
 import shop.exception.ShopClosedException;
+import shop.logger.ShopLogger;
 import shop.product.Cheese;
 import shop.product.milk.LongLifeMilk;
 import shop.product.milk.SemiLongLifeMilk;
@@ -18,6 +19,7 @@ import shop.product.milk.SemiLongLifeMilk;
 public class ShopBehaviorImpl implements IShopBehavior {
 
 	private Shop shop;
+	private ShopLogger shopLogger = new ShopLogger();
 
 	public ShopBehaviorImpl(Shop shop) {
 		this.shop = shop;
@@ -29,6 +31,10 @@ public class ShopBehaviorImpl implements IShopBehavior {
 
 	public void setShop(Shop shop) {
 		this.shop = shop;
+	}
+	
+	public ShopLogger getShopLogger() {
+		return shopLogger;
 	}
 
 	@Override
@@ -130,6 +136,10 @@ public class ShopBehaviorImpl implements IShopBehavior {
 			if (getShop().isOpen()) {
 				if (isThereProductOnStock(barcode)) {
 					if (getShop().getProductStock().get(barcode).getQuantity() >= quantity) {
+						//Logging action
+						ShopRegistration productReg = getShop().getProductStock().get(barcode);
+						getShopLogger().addBuyLog(productReg.toString());
+						
 						getShop().getProductStock().get(barcode).decreaseQuantity(quantity);
 					} else {
 						throw new NoMoreProductException(getShop().getProductStock().get(barcode).getProduct());
@@ -150,6 +160,10 @@ public class ShopBehaviorImpl implements IShopBehavior {
 		try {
 			if (getShop().isOpen()) {
 				if (isThereProductOnStock(product.getBarcode())) {
+					//Logging action
+					ShopRegistration productReg = getShop().getProductStock().get(product.getBarcode());
+					getShopLogger().addReplenishLog(productReg.toString());
+					
 					getShop().getProductStock().get(product.getBarcode()).increaseQuantity(quantity);
 				} else {
 					throw new NoSuchProductException(product);
@@ -168,6 +182,10 @@ public class ShopBehaviorImpl implements IShopBehavior {
 			if (getShop().isOpen()) {
 				getShop().getProductStock().put(product.getBarcode(),
 						getShop().new ShopRegistration(product, quantity, price));
+				
+				//Logging action
+				ShopRegistration productReg = getShop().getProductStock().get(product.getBarcode());
+				getShopLogger().addReplenishLog(productReg.toString());
 			} else {
 				throw new ShopClosedException();
 			}
@@ -181,6 +199,10 @@ public class ShopBehaviorImpl implements IShopBehavior {
 		try {
 			if (getShop().isOpen()) {
 				if (isThereProductOnStock(barcode)) {
+					//Logging action
+					Product product = getShop().getProductStock().get(barcode).getProduct();
+					getShopLogger().addRemoveLog(product.toString());
+					
 					getShop().getProductStock().remove(barcode);
 				} else {
 					throw new NoSuchProductException();

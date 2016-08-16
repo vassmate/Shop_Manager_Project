@@ -1,0 +1,160 @@
+
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.749_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:2177763419563315039
+			_Company:Falusi
+			_Warrant:2016-11-20
+			_isEatable:true
+			_Capacity:250.0
+			_Dripping:2.8
+		QUANTITY:25
+		PRICE:250
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.759_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:5618554557658478972
+			_Company:Riska
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:500.0
+			_Dripping:3.8
+		QUANTITY:20
+		PRICE:300
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.759_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:2436239102499339098
+			_Company:Riska
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:1000.0
+			_Dripping:2.8
+		QUANTITY:13
+		PRICE:150
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.759_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:5659253078257611131
+			_Company:Mizo
+			_Warrant:2016-06-15
+			_isEatable:false
+			_Capacity:1000.0
+			_Dripping:2.8
+		QUANTITY:11
+		PRICE:200
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.759_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:120292818959353608
+			_Company:Spar
+			_Warrant:2016-08-20
+			_isEatable:true
+			_Capacity:1000.0
+			_Dripping:3.8
+		QUANTITY:40
+		PRICE:120
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.759_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:722227013495309703
+			_Company:Milk
+			_Warrant:2016-12-20
+			_isEatable:true
+			_Capacity:1000.0
+			_Dripping:3.8
+		QUANTITY:22
+		PRICE:410
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.76_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:1923038218917164013
+			_Company:Mizo
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:500.0
+			_Dripping:3.8
+		QUANTITY:12
+		PRICE:320
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.76_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:2730488908250001449
+			_Company:Riska
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:1000.0
+			_Dripping:2.8
+		QUANTITY:32
+		PRICE:510
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.76_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:4369905306972435150
+			_Company:Tej
+			_Warrant:2016-12-20
+			_isEatable:true
+			_Capacity:1000.0
+			_Dripping:2.8
+		QUANTITY:44
+		PRICE:310
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.76_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:3264007307561316993
+			_Company:Riska
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:1000.0
+			_Dripping:3.8
+		QUANTITY:36
+		PRICE:210
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.76_LogInfo:
+		PRODUCT:
+			_Type:Milk
+			_Barcode:3473864051490469449
+			_Company:TehenMilk
+			_Warrant:2016-05-10
+			_isEatable:false
+			_Capacity:1000.0
+			_Dripping:2.8
+		QUANTITY:30
+		PRICE:110
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.761_LogInfo:
+		PRODUCT:
+			_Type:Cheese
+			_Barcode:9206886718034195913
+			_Company:Tehen
+			_Warrant:2016-12-01
+			_isEatable:true
+			_Weight:12.6
+			_Dripping:10.2
+		QUANTITY:20
+		PRICE:620
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.761_LogInfo:
+		PRODUCT:
+			_Type:Cheese
+			_Barcode:2905614710055485228
+			_Company:Sajt
+			_Warrant:2016-10-01
+			_isEatable:true
+			_Weight:11.4
+			_Dripping:5.5
+		QUANTITY:20
+		PRICE:750
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.761_LogInfo:
+		PRODUCT:
+			_Type:Soap
+			_Barcode:1806903557148947648
+			_Company:Szappan
+			_Detergency:A
+		QUANTITY:20
+		PRICE:650
+_Code1:Replenish_Date:2016-08-16_Time:15:46:10.761_LogInfo:
+		PRODUCT:
+			_Type:Soap
+			_Barcode:4990869657483234004
+			_Company:Soap
+			_Detergency:B
+		QUANTITY:20
+		PRICE:450
