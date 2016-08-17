@@ -10,20 +10,27 @@ import java.time.format.DateTimeFormatter;
 
 public class ShopLogger implements IShopLogger {
 
+	private String logFolder;
 	private File logfile;
 	private FileWriter logfileWriter;
 	private BufferedWriter bufferedLogfileWriter;
 
 	public ShopLogger() {
-		this.logfile = new File("logfile.txt");
+		this.logFolder = "/home/smp_log/";
+		this.logfile = new File(getLogFolder() + "logfile.txt");
 	}
 
-	public ShopLogger(File file) {
-		this.logfile = file;
+	public ShopLogger(String filePath, String fileName) {
+		this.logFolder = filePath;
+		this.logfile = new File(getLogFolder() + fileName);
 	}
 
 	public File getLogfile() {
 		return logfile;
+	}
+	
+	public String getLogFolder() {
+		return logFolder;
 	}
 
 	public boolean isLogFileExists() {
@@ -77,23 +84,38 @@ public class ShopLogger implements IShopLogger {
 			if (getLogfileWriter() != null && getBufferedLogfileWriter() != null) {
 				getBufferedLogfileWriter().flush();
 				getBufferedLogfileWriter().close();
-				getLogfileWriter().flush();
-				getLogfileWriter().close();
 			}
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
 	}
+	
+	public void clearLog(){
+		if(isLogFileExists()) {
+			try {
+				if (isLogFileExists()) {
+					OutputStream newLogfileStream = new FileOutputStream(getLogfile());
+					newLogfileStream.close();
+					makeNewLogfileWriter();
+					writeLog("_LogfileWasClearedAt:" + LocalDateTime.now());
+					closeLogging();
+				}
+			} catch (Exception ex) {
+				System.out.println(ex);
+			}
+		}
+	}
 
 	private void writeLog(String shopLogReqString) {
 		try {
-			if (getLogfileWriter() == null && getBufferedLogfileWriter() == null) {
+			if (!isLogFileExists()) {
+				makeNewLogfile();
 				makeNewLogfileWriter();
-			}
-			if (isLogFileExists()) {
+				getBufferedLogfileWriter().write(shopLogReqString);
+			} else if (getLogfileWriter() == null && getBufferedLogfileWriter() == null){
+				makeNewLogfileWriter();
 				getBufferedLogfileWriter().write(shopLogReqString);
 			} else {
-				makeNewLogfile();
 				getBufferedLogfileWriter().write(shopLogReqString);
 			}
 		} catch (Exception ex) {
@@ -103,6 +125,10 @@ public class ShopLogger implements IShopLogger {
 
 	private void makeNewLogfile() {
 		try {
+			File smpLogFolder = new File(getLogFolder());
+			if(!smpLogFolder.exists()) {
+				smpLogFolder.mkdir();
+			}
 			if (!isLogFileExists()) {
 				OutputStream newLogfileStream = new FileOutputStream(getLogfile());
 				newLogfileStream.close();
@@ -175,24 +201,24 @@ public class ShopLogger implements IShopLogger {
 		@Override
 		public String toString() {
 			if (isReplenish()) {
-				return "\n_Code" + getCode() + ":Replenish" + "_Date:"
+				return "\n\n_Code" + getCode() + ":Replenish" + "_Date:"
 						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
 						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
 			if (isRemove()) {
-				return "\n_Code" + getCode() + ":Remove" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+				return "\n\n_Code" + getCode() + ":Remove" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
 						+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
 			if (isBuy()) {
-				return "\n_Code" + getCode() + ":Buy" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+				return "\n\n_Code" + getCode() + ":Buy" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
 						+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
 			if (isProductListRequest()) {
-				return "\n_Code" + getCode() + ":ProductListRequest" + "_Date:"
+				return "\n\n_Code" + getCode() + ":ProductListRequest" + "_Date:"
 						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
 						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
-			return "\n_Code" + getCode() + ":UnknownAction" + "_Date:"
+			return "\n\n_Code" + getCode() + ":UnknownAction" + "_Date:"
 					+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
 					+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 		}

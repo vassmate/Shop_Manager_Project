@@ -29,6 +29,6 @@ public abstract class Food extends Product {
 
 	@Override
 	public String toString() {
-		return super.toString() + "\n\t\t\t_Warrant:" + getWarrant() + "\n\t\t\t_isEatable:" + isEatable();
+		return super.toString() + "_Warrant:" + getWarrant() + "_isEatable:" + isEatable();
 	}
 }

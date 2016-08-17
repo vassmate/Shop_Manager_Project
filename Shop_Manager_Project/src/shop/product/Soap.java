@@ -17,6 +17,6 @@ public class Soap extends Product {
 
 	@Override
 	public String toString() {
-		return "\n\t\t\t_Type:Soap" + super.toString() + "\n\t\t\t_Detergency:" + getDetergency();
+		return  super.toString() + "_Type:Soap" + "_Detergency:" + getDetergency();
 	}
 }

@@ -26,7 +26,7 @@ public abstract class Milk extends Food {
 
 	@Override
 	public String toString() {
-		return "\n\t\t\t_Type:Milk" + super.toString() + "\n\t\t\t_Capacity:" + getCapacity() + "\n\t\t\t_Dripping:"
+		return  super.toString() + "_Type:Milk" + "_Capacity:" + getCapacity() + "_Dripping:"
 				+ getDripping();
 	}
 }

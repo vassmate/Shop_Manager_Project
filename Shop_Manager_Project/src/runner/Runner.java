@@ -59,13 +59,17 @@ public class Runner {
 		// Print all data
 		printShop(fShop);
 		fShop.close();
+		
+		if (args.length !=0 && !args[0].equals(null) && args[0].equals("log.clear")) {
+			fShop.clearLogging();
+		}
 	}
 
 	private static void printShop(Shop shop) {
 		try {
 			if (shop.isOpen()) {
 				ProductIterator pIter = shop.new ProductIterator(shop.getProductsIterator());
-				System.out.println("SHOP:" + shop + "\n\tPRODUCTS:");
+				System.out.println(shop + "\n_Products:");
 				while (pIter.hasNext()) {
 					Product currentIterProduct = (Product) pIter.next();
 					ShopRegistration currentShopReg = shop.getProductStock().get(currentIterProduct.getBarcode());

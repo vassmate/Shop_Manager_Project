@@ -55,6 +55,10 @@ public class Shop {
 		shopBehavior.getShopLogger().closeLogging();
 		shopBehavior.close();
 	}
+	
+	public void clearLogging() {
+		shopBehavior.getShopLogger().clearLog();
+	}
 
 	public Hashtable<Long, ShopRegistration> getProductStock() {
 		return productStock;
@@ -94,7 +98,7 @@ public class Shop {
 
 	@Override
 	public String toString() {
-		return "\n\tSHOP_NAME: " + getName() + "\n\tSHOP_ADDRESS: " + getAddress() + "\n\tOWNER: " + getOwner();
+		return "\n_Shop_name: " + getName() + "\n_Shop_address: " + getAddress() + "\n_Owner: " + getOwner();
 	}
 
 	public class ShopRegistration {
@@ -143,7 +147,7 @@ public class Shop {
 
 		@Override
 		public String toString() {
-			return "\n\t\tPRODUCT:" + getProduct() + "\n\t\tQUANTITY:" + getQuantity() + "\n\t\tPRICE:" + getPrice();
+			return "\n\t_Product:" + getProduct() + "\n\t_Quantity:" + getQuantity() + "\n\t_Price:" + getPrice();
 		}
 	}
 

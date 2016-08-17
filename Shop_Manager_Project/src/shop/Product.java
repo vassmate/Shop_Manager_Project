@@ -19,6 +19,6 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "\n\t\t\t_Barcode:" + getBarcode() + "\n\t\t\t_Company:" + getCompany();
+		return "\n\t\t_Barcode:" + getBarcode() + "_Company:" + getCompany();
 	}
 }
