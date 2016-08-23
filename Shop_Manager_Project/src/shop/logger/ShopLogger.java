@@ -2,86 +2,82 @@ package shop.logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ShopLogger implements IShopLogger {
 
-	private String logFolder;
+	private File logFolder;
 	private File logfile;
-	private FileWriter logfileWriter;
 	private BufferedWriter bufferedLogfileWriter;
 
 	public ShopLogger() {
-		this.logFolder = "/home/smp_log/";
-		this.logfile = new File(getLogFolder() + "logfile.txt");
+		this.logFolder = new File("/home/smp_log");
+		this.logfile = new File(getLogFolder().getAbsolutePath() + "/logfile.txt");
 	}
 
 	public ShopLogger(String filePath, String fileName) {
-		this.logFolder = filePath;
-		this.logfile = new File(getLogFolder() + fileName);
+		this.logFolder = new File(filePath);
+		this.logfile = new File(getLogFolder().getAbsolutePath() + "/" + fileName);
 	}
 
 	public File getLogfile() {
 		return logfile;
 	}
-	
-	public String getLogFolder() {
+
+	public File getLogFolder() {
 		return logFolder;
-	}
-
-	public boolean isLogFileExists() {
-		return getLogfile().exists();
-	}
-
-	private FileWriter getLogfileWriter() {
-		return logfileWriter;
 	}
 
 	private BufferedWriter getBufferedLogfileWriter() {
 		return bufferedLogfileWriter;
 	}
 
-	private void setLogfileWriter(FileWriter logfileWriter) {
-		this.logfileWriter = logfileWriter;
-	}
-
 	private void setBufferedLogfileWriter(BufferedWriter bufferedLogfileWriter) {
 		this.bufferedLogfileWriter = bufferedLogfileWriter;
+	}
+
+	public boolean isLogFileExists() {
+		return getLogfile().exists();
+	}
+
+	public boolean isWriterExists() {
+		if (getBufferedLogfileWriter() == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public void addReplenishLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.REPLENISH, LocalDateTime.now(), logInfo);
-		writeLog(shopLogReg.toString());
+		checkLogAndWrite(shopLogReg);
+
 	}
 
 	@Override
 	public void addRemoveLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.REMOVE, LocalDateTime.now(), logInfo);
-		writeLog(shopLogReg.toString());
+		checkLogAndWrite(shopLogReg);
 	}
 
 	@Override
 	public void addBuyLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.BUY, LocalDateTime.now(), logInfo);
-		writeLog(shopLogReg.toString());
+		checkLogAndWrite(shopLogReg);
 	}
 
 	@Override
 	public void addProductListRequestLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.PRODUCTLIST_REQUEST, LocalDateTime.now(),
 				logInfo);
-		writeLog(shopLogReg.toString());
+		checkLogAndWrite(shopLogReg);
 	}
 
 	@Override
 	public void closeLogging() {
 		try {
-			if (getLogfileWriter() != null && getBufferedLogfileWriter() != null) {
+			if (isWriterExists()) {
 				getBufferedLogfileWriter().flush();
 				getBufferedLogfileWriter().close();
 			}
@@ -89,61 +85,28 @@ public class ShopLogger implements IShopLogger {
 			System.out.println(ex);
 		}
 	}
-	
-	public void clearLog(){
-		if(isLogFileExists()) {
-			try {
-				if (isLogFileExists()) {
-					OutputStream newLogfileStream = new FileOutputStream(getLogfile());
-					newLogfileStream.close();
-					makeNewLogfileWriter();
-					writeLog("_LogfileWasClearedAt:" + LocalDateTime.now());
-					closeLogging();
-				}
-			} catch (Exception ex) {
-				System.out.println(ex);
-			}
+
+	public void clearLog() {
+		if (isLogFileExists()) {
+			IShopLogger.clearLog(getLogfile());
+			setBufferedLogfileWriter(IShopLogger.makeNewLogfileWriter(getLogfile()));
+			IShopLogger.writeLog(getBufferedLogfileWriter(), "_LogfileWasClearedAt:" + LocalDateTime.now());
+			closeLogging();
 		}
 	}
 
-	private void writeLog(String shopLogReqString) {
-		try {
-			if (!isLogFileExists()) {
-				makeNewLogfile();
-				makeNewLogfileWriter();
-				getBufferedLogfileWriter().write(shopLogReqString);
-			} else if (getLogfileWriter() == null && getBufferedLogfileWriter() == null){
-				makeNewLogfileWriter();
-				getBufferedLogfileWriter().write(shopLogReqString);
+	private void checkLogAndWrite(ShopLogRegistration shopLogReg) {
+		if (isLogFileExists()) {
+			if (isWriterExists()) {
+				IShopLogger.writeLog(getBufferedLogfileWriter(), shopLogReg.toString());
 			} else {
-				getBufferedLogfileWriter().write(shopLogReqString);
+				setBufferedLogfileWriter(IShopLogger.makeNewLogfileWriter(getLogfile()));
+				IShopLogger.writeLog(getBufferedLogfileWriter(), shopLogReg.toString());
 			}
-		} catch (Exception ex) {
-			System.out.println(ex);
-		}
-	}
-
-	private void makeNewLogfile() {
-		try {
-			File smpLogFolder = new File(getLogFolder());
-			if(!smpLogFolder.exists()) {
-				smpLogFolder.mkdir();
-			}
-			if (!isLogFileExists()) {
-				OutputStream newLogfileStream = new FileOutputStream(getLogfile());
-				newLogfileStream.close();
-			}
-		} catch (Exception ex) {
-			System.out.println(ex);
-		}
-	}
-
-	private void makeNewLogfileWriter() {
-		try {
-			setLogfileWriter(new FileWriter(getLogfile(), true));
-			setBufferedLogfileWriter(new BufferedWriter(getLogfileWriter()));
-		} catch (Exception ex) {
-			System.out.println(ex);
+		} else {
+			IShopLogger.makeNewLogfile(getLogFolder(), getLogfile());
+			setBufferedLogfileWriter(IShopLogger.makeNewLogfileWriter(getLogfile()));
+			IShopLogger.writeLog(getBufferedLogfileWriter(), shopLogReg.toString());
 		}
 	}
 
@@ -206,8 +169,9 @@ public class ShopLogger implements IShopLogger {
 						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
 			if (isRemove()) {
-				return "\n\n_Code" + getCode() + ":Remove" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
-						+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+				return "\n\n_Code" + getCode() + ":Remove" + "_Date:"
+						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
+						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
 			}
 			if (isBuy()) {
 				return "\n\n_Code" + getCode() + ":Buy" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)

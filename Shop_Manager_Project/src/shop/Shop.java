@@ -55,7 +55,7 @@ public class Shop {
 		shopBehavior.getShopLogger().closeLogging();
 		shopBehavior.close();
 	}
-	
+
 	public void clearLogging() {
 		shopBehavior.getShopLogger().clearLog();
 	}
