@@ -109,7 +109,6 @@ public class ShopLogger implements IShopLogger {
 					shopLogs.add(line);
 					line = bReader.readLine();
 				}
-				shopLogs.add(bReader.readLine());
 				bReader.close();
 				return shopLogs.iterator();
 			}

@@ -60,12 +60,14 @@ public class Runner {
 
 		// Print all data
 		printShop(fShop);
-		printLogfileContent(fShop);
+
+		// Close shop
 		fShop.close();
-		fShop.clearLogging();
-		if (args.length != 0 && !args[0].equals(null) && args[0].equals("log.clear")) {
-			fShop.clearLogging();
-		}
+
+		// Check command line arguments
+		// log.clear == fShop.clearLogging()
+		// log.show == printLogfileContent(fShop)
+		checkArgs(args, fShop);
 	}
 
 	private static void printShop(Shop shop) {
@@ -87,10 +89,23 @@ public class Runner {
 	}
 
 	private static void printLogfileContent(Shop shop) {
-		System.out.println(">>Logfile content:\n");
+		System.out.println("\n>>Logfile's content:\n");
 		Iterator<String> logs = shop.getLogs();
 		while (logs.hasNext()) {
 			System.out.println(logs.next());
+		}
+	}
+
+	private static void checkArgs(String[] args, Shop shop) {
+		if (args.length != 0) {
+			for (String arg : args) {
+				if (arg.equals("log.clear")) {
+					shop.clearLogging();
+				}
+				if (arg.equals("log.show")) {
+					printLogfileContent(shop);
+				}
+			}
 		}
 	}
 }
