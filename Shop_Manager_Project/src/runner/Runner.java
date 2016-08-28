@@ -1,5 +1,7 @@
 package runner;
 
+import java.util.Iterator;
+
 import shop.Product;
 import shop.ProductFactory;
 import shop.Shop;
@@ -58,9 +60,10 @@ public class Runner {
 
 		// Print all data
 		printShop(fShop);
+		printLogfileContent(fShop);
 		fShop.close();
-		
-		if (args.length !=0 && !args[0].equals(null) && args[0].equals("log.clear")) {
+		fShop.clearLogging();
+		if (args.length != 0 && !args[0].equals(null) && args[0].equals("log.clear")) {
 			fShop.clearLogging();
 		}
 	}
@@ -80,6 +83,14 @@ public class Runner {
 			}
 		} catch (ShopException ex) {
 			System.out.println(ex);
+		}
+	}
+
+	private static void printLogfileContent(Shop shop) {
+		System.out.println(">>Logfile content:\n");
+		Iterator<String> logs = shop.getLogs();
+		while (logs.hasNext()) {
+			System.out.println(logs.next());
 		}
 	}
 }

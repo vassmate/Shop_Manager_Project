@@ -56,6 +56,10 @@ public class Shop {
 		shopBehavior.close();
 	}
 
+	public Iterator<String> getLogs() {
+		return shopBehavior.getShopLogger().getShopLogs();
+	}
+
 	public void clearLogging() {
 		shopBehavior.getShopLogger().clearLog();
 	}

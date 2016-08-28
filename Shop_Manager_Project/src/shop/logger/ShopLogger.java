@@ -1,19 +1,32 @@
 package shop.logger;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ShopLogger implements IShopLogger {
 
 	private File logFolder;
 	private File logfile;
 	private BufferedWriter bufferedLogfileWriter;
+	private final String windowsDefaultFolder = "C:/Users/Public/Documents";
+	private final String linuxDefaultFolder = "/home";
+	private final String defaultFilename = "logfile.txt";
+	private final String defaultFolderName = "smp_log";
 
 	public ShopLogger() {
-		this.logFolder = new File("/home/smp_log");
-		this.logfile = new File(getLogFolder().getAbsolutePath() + "/logfile.txt");
+		this.logFolder = new File(windowsDefaultFolder);
+		if (!getLogFolder().exists()) {
+			this.logFolder = new File(linuxDefaultFolder + "/" + defaultFolderName);
+		} else {
+			this.logFolder = new File(windowsDefaultFolder + "/" + defaultFolderName);
+		}
+		this.logfile = new File(getLogFolder().getAbsolutePath() + "/" + defaultFilename);
 	}
 
 	public ShopLogger(String filePath, String fileName) {
@@ -83,6 +96,27 @@ public class ShopLogger implements IShopLogger {
 			}
 		} catch (Exception ex) {
 			System.out.println(ex);
+		}
+	}
+
+	public Iterator<String> getShopLogs() {
+		ArrayList<String> shopLogs = new ArrayList<>();
+		try {
+			if (isLogFileExists()) {
+				BufferedReader bReader = new BufferedReader(new FileReader(getLogfile()));
+				String line = bReader.readLine();
+				while (line != null) {
+					shopLogs.add(line);
+					line = bReader.readLine();
+				}
+				shopLogs.add(bReader.readLine());
+				bReader.close();
+				return shopLogs.iterator();
+			}
+			return shopLogs.iterator();
+		} catch (Exception ex) {
+			System.out.println(ex);
+			return shopLogs.iterator();
 		}
 	}
 
