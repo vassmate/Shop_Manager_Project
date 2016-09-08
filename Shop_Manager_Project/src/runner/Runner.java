@@ -58,39 +58,48 @@ public class Runner {
 		fShop.addNewProduct(soap1, 20, 650);
 		fShop.addNewProduct(soap2, 20, 450);
 
-		// Print all data
-		printShop(fShop);
+		// Print all data.
+		// If it is false it won't print anything.
+		printShop(fShop, true);
 
-		// Close shop
+		// Close shop (closes and flushes the writer in the ShopLogger as well).
 		fShop.close();
 
-		// Check command line arguments
-		// log.clear == fShop.clearLogging()
-		// log.show == printLogfileContent(fShop)
+		/*
+		 * Check command line arguments
+		 * 
+		 * log.clear==fShop.clearLogging() log.show==printLogfileContent(fShop)
+		 * log.show.code1==printLogfileContent(shop.getReplenishLogs())
+		 * log.show.code2==printLogfileContent(shop.getRemoveLogs())
+		 * log.show.code3==printLogfileContent(shop.getBuyLogs())
+		 * log.show.code4==printLogfileContent(shop.getProductListRequestLogs())
+		 */
 		checkArgs(args, fShop);
 	}
 
-	private static void printShop(Shop shop) {
+	private static void printShop(Shop shop, boolean doPrint) {
 		try {
-			if (shop.isOpen()) {
-				ProductIterator pIter = shop.new ProductIterator(shop.getProductsIterator());
-				System.out.println(shop + "\n_Products:");
-				while (pIter.hasNext()) {
-					Product currentIterProduct = (Product) pIter.next();
-					ShopRegistration currentShopReg = shop.getProductStock().get(currentIterProduct.getBarcode());
-					System.out.println(currentShopReg);
+			if (doPrint) {
+				if (shop.isOpen()) {
+					ProductIterator pIter = shop.new ProductIterator(shop.getProductsIterator());
+					System.out.println(shop + "\n_Products:");
+					while (pIter.hasNext()) {
+						Product currentIterProduct = (Product) pIter.next();
+						ShopRegistration currentShopReg = shop.getProductStock().get(currentIterProduct.getBarcode());
+						System.out.println(currentShopReg);
+					}
+				} else {
+					throw new ShopClosedException();
 				}
-			} else {
-				throw new ShopClosedException();
 			}
 		} catch (ShopException ex) {
 			System.out.println(ex);
 		}
 	}
 
-	private static void printLogfileContent(Shop shop) {
+	private static void printLogfileContent(Iterator<String> specifiedIterator) {
 		System.out.println("\n>>Logfile's content:\n");
-		Iterator<String> logs = shop.getLogs();
+		Iterator<String> logs = specifiedIterator;
 		while (logs.hasNext()) {
 			System.out.println(logs.next());
 		}
@@ -103,7 +112,19 @@ public class Runner {
 					shop.clearLogging();
 				}
 				if (arg.equals("log.show")) {
-					printLogfileContent(shop);
+					printLogfileContent(shop.getLogs());
+				}
+				if (arg.equals("log.show.code1")) {
+					printLogfileContent(shop.getReplenishLogs());
+				}
+				if (arg.equals("log.show.code2")) {
+					printLogfileContent(shop.getRemoveLogs());
+				}
+				if (arg.equals("log.show.code3")) {
+					printLogfileContent(shop.getBuyLogs());
+				}
+				if (arg.equals("log.show.code4")) {
+					printLogfileContent(shop.getProductListRequestLogs());
 				}
 			}
 		}

@@ -60,6 +60,22 @@ public class Shop {
 		return shopBehavior.getShopLogger().getShopLogs();
 	}
 
+	public Iterator<String> getReplenishLogs() {
+		return shopBehavior.getShopLogger().getReplenishLogs();
+	}
+
+	public Iterator<String> getRemoveLogs() {
+		return shopBehavior.getShopLogger().getRemoveLogs();
+	}
+
+	public Iterator<String> getBuyLogs() {
+		return shopBehavior.getShopLogger().getBuyLogs();
+	}
+
+	public Iterator<String> getProductListRequestLogs() {
+		return shopBehavior.getShopLogger().getProductListRequestLogs();
+	}
+
 	public void clearLogging() {
 		shopBehavior.getShopLogger().clearLog();
 	}

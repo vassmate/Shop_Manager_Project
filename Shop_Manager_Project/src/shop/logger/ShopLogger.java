@@ -14,6 +14,8 @@ public class ShopLogger implements IShopLogger {
 	private File logFolder;
 	private File logfile;
 	private BufferedWriter bufferedLogfileWriter;
+	private Iterator<String> shopLogs;
+	private boolean isWriterClosed = true;
 	private final String windowsDefaultFolder = "C:/Users/Public/Documents";
 	private final String linuxDefaultFolder = "/home";
 	private final String defaultFilename = "logfile.txt";
@@ -47,6 +49,7 @@ public class ShopLogger implements IShopLogger {
 	}
 
 	private void setBufferedLogfileWriter(BufferedWriter bufferedLogfileWriter) {
+		this.isWriterClosed = false;
 		this.bufferedLogfileWriter = bufferedLogfileWriter;
 	}
 
@@ -55,12 +58,18 @@ public class ShopLogger implements IShopLogger {
 	}
 
 	public boolean isWriterExists() {
-		if (getBufferedLogfileWriter() == null) {
+		if (this.isWriterClosed) {
 			return false;
 		}
 		return true;
 	}
 
+	/*
+	 * The Override annotation is not necessary but it makes clear which methods
+	 * are overridden from the IShopLogger interface
+	 */
+
+	// File writing functions
 	@Override
 	public void addReplenishLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.REPLENISH, LocalDateTime.now(), logInfo);
@@ -87,19 +96,100 @@ public class ShopLogger implements IShopLogger {
 		checkLogAndWrite(shopLogReg);
 	}
 
+	// File reading functions
+	@Override
+	public Iterator<String> getShopLogs() {
+		addProductListRequestLog("\n\t_All logs were requested.");
+		closeLogging();
+		refreshAllShopLogs();
+		return this.shopLogs;
+	}
+
+	@Override
+	public Iterator<String> getReplenishLogs() {
+		return getLogIterator("_Code1", "\n\t_Replenish logs were requested.");
+	}
+
+	@Override
+	public Iterator<String> getRemoveLogs() {
+		return getLogIterator("_Code2", "\n\t_Removed product logs were requested.");
+	}
+
+	@Override
+	public Iterator<String> getBuyLogs() {
+		return getLogIterator("_Code3", "\n\t_Bought product logs were requested.");
+	}
+
+	@Override
+	public Iterator<String> getProductListRequestLogs() {
+		return getSpecifiedLogIterator("_Code4");
+	}
+
 	@Override
 	public void closeLogging() {
 		try {
 			if (isWriterExists()) {
 				getBufferedLogfileWriter().flush();
 				getBufferedLogfileWriter().close();
+				this.isWriterClosed = true;
 			}
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
 	}
 
-	public Iterator<String> getShopLogs() {
+	// File clearing function
+	public void clearLog() {
+		if (isLogFileExists()) {
+			IShopLogger.clearLog(getLogfile());
+			setBufferedLogfileWriter(IShopLogger.makeNewLogfileWriter(getLogfile()));
+			IShopLogger.writeLog(getBufferedLogfileWriter(), "_LogfileWasClearedAt:" + LocalDateTime.now());
+			closeLogging();
+		}
+	}
+
+	// Private functions for handling logging specific actions
+	private Iterator<String> getAllShopLogs() {
+		refreshAllShopLogs();
+		return this.shopLogs;
+	}
+
+	private void refreshAllShopLogs() {
+		this.shopLogs = getShopLogsFromFile();
+	}
+
+	private Iterator<String> getLogIterator(String logCode, String logMessage) {
+		Iterator<String> specificIterator;
+		addProductListRequestLog(logMessage);
+		closeLogging();
+		specificIterator = getSpecifiedLogIterator(logCode);
+		return specificIterator;
+	}
+
+	private Iterator<String> getSpecifiedLogIterator(String logCode) {
+		String currentLog;
+		ArrayList<String> specifiedLogList = new ArrayList<>();
+		Iterator<String> allShopLogs = getAllShopLogs();
+
+		while (allShopLogs.hasNext()) {
+			currentLog = allShopLogs.next();
+			if (currentLog.startsWith(logCode) && logCode.equals("_Code4")) {
+				specifiedLogList.add(currentLog);
+				specifiedLogList.add(allShopLogs.next());
+				specifiedLogList.add(allShopLogs.next());
+			} else if (currentLog.startsWith(logCode)) {
+				specifiedLogList.add(currentLog);
+				specifiedLogList.add(allShopLogs.next());
+				specifiedLogList.add(allShopLogs.next());
+				specifiedLogList.add(allShopLogs.next());
+				specifiedLogList.add(allShopLogs.next());
+				specifiedLogList.add(allShopLogs.next());
+			}
+		}
+		return specifiedLogList.iterator();
+	}
+
+	private Iterator<String> getShopLogsFromFile() {
 		ArrayList<String> shopLogs = new ArrayList<>();
 		try {
 			if (isLogFileExists()) {
@@ -119,15 +209,6 @@ public class ShopLogger implements IShopLogger {
 		}
 	}
 
-	public void clearLog() {
-		if (isLogFileExists()) {
-			IShopLogger.clearLog(getLogfile());
-			setBufferedLogfileWriter(IShopLogger.makeNewLogfileWriter(getLogfile()));
-			IShopLogger.writeLog(getBufferedLogfileWriter(), "_LogfileWasClearedAt:" + LocalDateTime.now());
-			closeLogging();
-		}
-	}
-
 	private void checkLogAndWrite(ShopLogRegistration shopLogReg) {
 		if (isLogFileExists()) {
 			if (isWriterExists()) {
@@ -143,6 +224,12 @@ public class ShopLogger implements IShopLogger {
 		}
 	}
 
+	/*
+	 * The ShopLogRegistration class describes a log which will be written in
+	 * the log file. The log structure will look like: -header: includes the
+	 * registration code and registration date and time -body: includes
+	 * information about the registration itself.
+	 */
 	public class ShopLogRegistration implements IShopLogRegistration {
 		private int code;
 		private LocalDateTime date;

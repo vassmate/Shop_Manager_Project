@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 public interface IShopLogger {
 
@@ -20,6 +21,16 @@ public interface IShopLogger {
 	public void addBuyLog(String logInfo);
 
 	public void addProductListRequestLog(String logInfo);
+
+	public Iterator<String> getShopLogs();
+
+	public Iterator<String> getReplenishLogs();
+
+	public Iterator<String> getRemoveLogs();
+
+	public Iterator<String> getBuyLogs();
+
+	public Iterator<String> getProductListRequestLogs();
 
 	public void closeLogging();
 
@@ -38,7 +49,7 @@ public interface IShopLogger {
 		try {
 			bWriter.write(logString);
 		} catch (Exception ex) {
-			System.out.println(ex);
+			ex.printStackTrace();
 		}
 	}
 
@@ -66,7 +77,7 @@ public interface IShopLogger {
 			BufferedWriter bw = new BufferedWriter(fw);
 			return bw;
 		} catch (Exception ex) {
-			System.out.println(ex);
+			ex.printStackTrace();
 			return null;
 		}
 	}
