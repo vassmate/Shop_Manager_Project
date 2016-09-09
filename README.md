@@ -3,7 +3,8 @@ Repository for a Java exercise application.
 
 # Description:
 This application is for exercising the basics of Java, OOP and TDD.
-Work in progress...
+The app is now finshed. This program is currently works only in a command line enviroment and the only imputs the user can make are command line arguments. I will try to make a proper gui for it, so it will be more interactive.
+Also the java runnable is not yet updated. Until than, use Eclipse or your prefered IDE and feel free to mess around with the code.
 
 # Finished tasks:
 - Task I.:
