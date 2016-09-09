@@ -23,16 +23,13 @@ public class ShopLogger implements IShopLogger {
 
 	public ShopLogger() {
 		this.logFolder = new File(windowsDefaultFolder);
-		if (!getLogFolder().exists()) {
-			this.logFolder = new File(linuxDefaultFolder + "/" + defaultFolderName);
-		} else {
-			this.logFolder = new File(windowsDefaultFolder + "/" + defaultFolderName);
-		}
+		checkAndSetDefaultFolder();
 		this.logfile = new File(getLogFolder().getAbsolutePath() + "/" + defaultFilename);
 	}
 
 	public ShopLogger(String filePath, String fileName) {
 		this.logFolder = new File(filePath);
+		checkAndSetCustomFolder();
 		this.logfile = new File(getLogFolder().getAbsolutePath() + "/" + fileName);
 	}
 
@@ -74,7 +71,6 @@ public class ShopLogger implements IShopLogger {
 	public void addReplenishLog(String logInfo) {
 		ShopLogRegistration shopLogReg = new ShopLogRegistration(IShopLogger.REPLENISH, LocalDateTime.now(), logInfo);
 		checkLogAndWrite(shopLogReg);
-
 	}
 
 	@Override
@@ -149,6 +145,22 @@ public class ShopLogger implements IShopLogger {
 	}
 
 	// Private functions for handling logging specific actions
+
+	private void checkAndSetDefaultFolder() {
+		if (!getLogFolder().exists()) {
+			this.logFolder = new File(linuxDefaultFolder + "/" + defaultFolderName);
+		} else {
+			this.logFolder = new File(windowsDefaultFolder + "/" + defaultFolderName);
+		}
+	}
+
+	private void checkAndSetCustomFolder() {
+		if (!getLogFolder().getAbsolutePath().startsWith("C:/")
+				&& !getLogFolder().getAbsolutePath().startsWith("/home")) {
+			checkAndSetDefaultFolder();
+		}
+	}
+
 	private Iterator<String> getAllShopLogs() {
 		refreshAllShopLogs();
 		return this.shopLogs;

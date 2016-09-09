@@ -12,7 +12,7 @@ public class Shop {
 	private String owner;
 	private boolean open = false;
 	private Hashtable<Long, ShopRegistration> productStock = new Hashtable<Long, ShopRegistration>();
-	private ShopBehaviorImpl shopBehavior = new ShopBehaviorImpl(this);
+	private ShopBehaviorImpl shopBehavior;
 
 	public Shop(String name, String address, String owner) {
 		this.name = name;
@@ -25,6 +25,21 @@ public class Shop {
 		this.address = address;
 		this.owner = owner;
 		this.productStock = productStock;
+		this.shopBehavior = new ShopBehaviorImpl(this);
+	}
+
+	public Shop(String name, String address, String owner, String logFilePath) {
+		this.name = name;
+		this.address = address;
+		this.owner = owner;
+		this.shopBehavior = new ShopBehaviorImpl(this, logFilePath, "logfile_" + getName() + ".txt");
+	}
+
+	public Shop(String name, String address, String owner, String logFilePath, String logFileName) {
+		this.name = name;
+		this.address = address;
+		this.owner = owner;
+		this.shopBehavior = new ShopBehaviorImpl(this, logFilePath, logFileName);
 	}
 
 	public String getName() {

@@ -1,7 +1,9 @@
 package runner;
 
 import java.util.Iterator;
+import java.util.Vector;
 
+import plaza.PlazaImpl;
 import shop.Product;
 import shop.ProductFactory;
 import shop.Shop;
@@ -14,9 +16,9 @@ import shop.product.Milk;
 public class Runner {
 
 	public static void main(String[] args) {
+		welcomeMessage();
+
 		ProductFactory pFactory = new ProductFactory();
-		Shop fShop = new Shop("Milk Shop", "Egyenes utca 1.", "Kovacs Jozsi");
-		fShop.open();
 
 		// LongLife milks
 		Product milk1 = pFactory.makeNewLongLifeMilk("Falusi", "2016-11-20", Milk.CUP, Milk.SEMI_SKIMMED);
@@ -41,40 +43,70 @@ public class Runner {
 		Product soap1 = pFactory.makeNewSoap("Szappan", 'A');
 		Product soap2 = pFactory.makeNewSoap("Soap", 'B');
 
-		// Adding stuff to the stock
-		fShop.addNewProduct(milk1, 25, 250);
-		fShop.addNewProduct(milk2, 20, 300);
-		fShop.addNewProduct(milk3, 13, 150);
-		fShop.addNewProduct(milk4, 11, 200);
-		fShop.addNewProduct(milk5, 40, 120);
-		fShop.addNewProduct(milk6, 22, 410);
-		fShop.addNewProduct(milk7, 12, 320);
-		fShop.addNewProduct(milk8, 32, 510);
-		fShop.addNewProduct(milk9, 44, 310);
-		fShop.addNewProduct(milk10, 36, 210);
-		fShop.addNewProduct(milk11, 30, 110);
-		fShop.addNewProduct(cheese1, 20, 620);
-		fShop.addNewProduct(cheese2, 20, 750);
-		fShop.addNewProduct(soap1, 20, 650);
-		fShop.addNewProduct(soap2, 20, 450);
+		Shop cShop = new Shop("Coop", "Egyenes utca 1.", "K. Jozsi", "C:/Users/Public/Documents");
+		Shop sShop = new Shop("Spar", "Egyenes utca 1.", "S. Jozsi", "C:/Users/Public/Documents");
+		Shop vShop = new Shop("VegyesBolt", "Egyenes utca 1.", "V. Jozsi", "C:/Users/Public/Documents");
+		Shop tShop = new Shop("TheShop", "Egyenes utca 1.", "T. Jozsi", "C:/Users/Public/Documents");
 
-		// Print all data.
-		// If it is false it won't print anything.
-		printShop(fShop, true);
+		Vector<Shop> boltok = new Vector<Shop>();
+		boltok.add(cShop);
+		boltok.add(sShop);
+		boltok.add(vShop);
+		boltok.add(tShop);
 
-		// Close shop (closes and flushes the writer in the ShopLogger as well).
-		fShop.close();
+		PlazaImpl centrum = new PlazaImpl(boltok);
 
-		/*
-		 * Check command line arguments
-		 * 
-		 * log.clear==fShop.clearLogging() log.show==printLogfileContent(fShop)
-		 * log.show.code1==printLogfileContent(shop.getReplenishLogs())
-		 * log.show.code2==printLogfileContent(shop.getRemoveLogs())
-		 * log.show.code3==printLogfileContent(shop.getBuyLogs())
-		 * log.show.code4==printLogfileContent(shop.getProductListRequestLogs())
-		 */
-		checkArgs(args, fShop);
+		Iterator<Shop> shopIter = centrum.getAllShops();
+		Shop currentShop;
+
+		while (shopIter.hasNext()) {
+			currentShop = shopIter.next();
+			currentShop.open();
+			currentShop.addNewProduct(milk1, 25, 250);
+			currentShop.addNewProduct(milk2, 20, 300);
+			currentShop.addNewProduct(milk3, 13, 150);
+			currentShop.addNewProduct(milk4, 11, 200);
+			currentShop.addNewProduct(milk5, 40, 120);
+			currentShop.addNewProduct(milk6, 22, 410);
+			currentShop.addNewProduct(milk7, 12, 320);
+			currentShop.addNewProduct(milk8, 32, 510);
+			currentShop.addNewProduct(milk9, 44, 310);
+			currentShop.addNewProduct(milk10, 36, 210);
+			currentShop.addNewProduct(milk11, 30, 110);
+			currentShop.addNewProduct(cheese1, 20, 620);
+			currentShop.addNewProduct(cheese2, 20, 750);
+			currentShop.addNewProduct(soap1, 20, 650);
+			currentShop.addNewProduct(soap2, 20, 450);
+
+			// Print all shops. Set it to true if you want to print all the shop
+			// data.
+			printShop(currentShop, false);
+
+			/*
+			 * Already close the shop because of the writer streams not working
+			 * properly otherwise. Will fix it later.
+			 */
+			currentShop.close();
+
+			// Check command line arguments
+			checkArgs(args, currentShop);
+		}
+
+		centrum.close();
+	}
+
+	private static void welcomeMessage() {
+		System.out.println("\n>Hi! This is a Shop Manager Project Apllictaion."
+				+ "\n>The program has already made a few logfiles at the default log directory which is:"
+				+ "\n\t\tC:/Users/Public/Documents/smp_log" + "\n\tor:" + "\n\t\t/home/smp_log "
+				+ "\n\tif you are using Linux."
+				+ "\n>If you would like to see their content than re-run this application with a command line argument from below.");
+		System.out.println("\n>Available command line arguments:" + "\n\tlog.show = printLogfileContent(fShop)"
+				+ "\n\tlog.show.code1 = printLogfileContent(shop.getReplenishLogs())"
+				+ "\n\tlog.show.code2 = printLogfileContent(shop.getRemoveLogs())"
+				+ "\n\tlog.show.code3 = printLogfileContent(shop.getBuyLogs())"
+				+ "\n\tlog.show.code4 = printLogfileContent(shop.getProductListRequestLogs())");
+		System.out.println("\n>If you want to clear the logs, than use:" + "\n\tlog.clear = fShop.clearLogging()");
 	}
 
 	private static void printShop(Shop shop, boolean doPrint) {
@@ -97,8 +129,8 @@ public class Runner {
 		}
 	}
 
-	private static void printLogfileContent(Iterator<String> specifiedIterator) {
-		System.out.println("\n>>Logfile's content:\n");
+	private static void printLogfileContent(Shop shop, Iterator<String> specifiedIterator) {
+		System.out.println("\n>>" + shop.getName() + " logfile's content:");
 		Iterator<String> logs = specifiedIterator;
 		while (logs.hasNext()) {
 			System.out.println(logs.next());
@@ -112,19 +144,19 @@ public class Runner {
 					shop.clearLogging();
 				}
 				if (arg.equals("log.show")) {
-					printLogfileContent(shop.getLogs());
+					printLogfileContent(shop, shop.getLogs());
 				}
 				if (arg.equals("log.show.code1")) {
-					printLogfileContent(shop.getReplenishLogs());
+					printLogfileContent(shop, shop.getReplenishLogs());
 				}
 				if (arg.equals("log.show.code2")) {
-					printLogfileContent(shop.getRemoveLogs());
+					printLogfileContent(shop, shop.getRemoveLogs());
 				}
 				if (arg.equals("log.show.code3")) {
-					printLogfileContent(shop.getBuyLogs());
+					printLogfileContent(shop, shop.getBuyLogs());
 				}
 				if (arg.equals("log.show.code4")) {
-					printLogfileContent(shop.getProductListRequestLogs());
+					printLogfileContent(shop, shop.getProductListRequestLogs());
 				}
 			}
 		}
