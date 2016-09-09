@@ -20,7 +20,5 @@ Work in progress...
  - Interface, Hashtable, Iterator
 - Task VII.:
  - Error handling, File handling, Iterator, Cross Cutting Concern
-
-# Work in progress:
 - Task VIII.:
  - Finalizing the applictaion, adding Plaza interface and implementation
