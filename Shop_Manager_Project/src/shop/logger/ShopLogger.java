@@ -188,7 +188,6 @@ public class ShopLogger implements IShopLogger {
 			if (currentLog.startsWith(logCode) && logCode.equals("_Code4")) {
 				specifiedLogList.add(currentLog);
 				specifiedLogList.add(allShopLogs.next());
-				specifiedLogList.add(allShopLogs.next());
 			} else if (currentLog.startsWith(logCode)) {
 				specifiedLogList.add(currentLog);
 				specifiedLogList.add(allShopLogs.next());
@@ -296,24 +295,43 @@ public class ShopLogger implements IShopLogger {
 		@Override
 		public String toString() {
 			if (isReplenish()) {
-				return "\n\n_Code" + getCode() + ":Replenish" + "_Date:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+				return getReplenishLogString();
 			}
 			if (isRemove()) {
-				return "\n\n_Code" + getCode() + ":Remove" + "_Date:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+				return getRemoveLogString();
 			}
 			if (isBuy()) {
-				return "\n\n_Code" + getCode() + ":Buy" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
-						+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+				return getBuyLogString();
 			}
 			if (isProductListRequest()) {
-				return "\n\n_Code" + getCode() + ":ProductListRequest" + "_Date:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
-						+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+				return getProductListRequestString();
 			}
+			return getUnknownActionString();
+		}
+
+		private String getReplenishLogString() {
+			return "\n\n_Code" + getCode() + ":Replenish" + "_Date:"
+					+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
+					+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+		}
+
+		private String getRemoveLogString() {
+			return "\n\n_Code" + getCode() + ":Remove" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+					+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+		}
+
+		private String getBuyLogString() {
+			return "\n\n_Code" + getCode() + ":Buy" + "_Date:" + getDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+					+ "_Time:" + getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+		}
+
+		private String getProductListRequestString() {
+			return "\n\n_Code" + getCode() + ":ProductListRequest" + "_Date:"
+					+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
+					+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
+		}
+
+		private String getUnknownActionString() {
 			return "\n\n_Code" + getCode() + ":UnknownAction" + "_Date:"
 					+ getDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_Time:"
 					+ getDate().format(DateTimeFormatter.ISO_LOCAL_TIME) + "_LogInfo:" + getLogInfo();
