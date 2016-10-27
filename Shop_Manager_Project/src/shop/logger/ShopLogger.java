@@ -185,12 +185,11 @@ public class ShopLogger implements IShopLogger {
 
 		while (allShopLogs.hasNext()) {
 			currentLog = allShopLogs.next();
-			if (currentLog.startsWith(logCode) && logCode.equals("_Code4")) {
+			if (currentLog.startsWith(logCode) && (logCode.equals("_Code4") || logCode.equals("_Code2"))) {
 				specifiedLogList.add(currentLog);
 				specifiedLogList.add(allShopLogs.next());
 			} else if (currentLog.startsWith(logCode)) {
 				specifiedLogList.add(currentLog);
-				specifiedLogList.add(allShopLogs.next());
 				specifiedLogList.add(allShopLogs.next());
 				specifiedLogList.add(allShopLogs.next());
 				specifiedLogList.add(allShopLogs.next());
